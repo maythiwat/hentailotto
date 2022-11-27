@@ -7,17 +7,45 @@
 
     lottoCode = []
     lottoResult = null
+    hentaiResult = null
+
+    isLoadingLotto = true
+    isLoadingHentai = true
 
     fetch('/api/check', {
       method: 'POST',
       body: JSON.stringify({ lotto })
     })
       .then(res => res.json())
-      .then(res => lottoResult = res)
+      .then(res => {
+        lottoResult = res
+        isLoadingLotto = false
+      })
+    
+    fetch('https://api.hifumin.app/v1/graphql', {
+      method: 'POST',
+      body: JSON.stringify({
+        operationName: 'getHentaiById',
+        variables: {
+          id: Number(lotto)
+        },
+        query: 'query getHentaiById($id:Int!){nhql{by(id:$id){data{id title{display}images{cover{link info{width height}}}info{amount favorite upload}metadata{language tags{name}artists{name count}characters{name count}parodies{name count}}}}}}'
+      })
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (res.data) {
+          hentaiResult = res
+          isLoadingHentai = false
+        }
+      })
   }
 
   let lottoCode: string[] = []
   let lottoResult: any = null
+  let hentaiResult: any = null
+  let isLoadingLotto = false
+  let isLoadingHentai = false
 </script>
 
 <div class="min-h-screen flex justify-center">
@@ -46,7 +74,18 @@
     </div>
 
     <div class="flex flex-col my-12">
-      {#if lottoResult != null}
+      {#if isLoadingLotto && lottoResult == null}
+        <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
+          <div class="bg-gray-300 py-2 w-[260px] animate-pulse"></div>
+          <div class="bg-gray-300 py-2 mt-2 w-[140px] animate-pulse"></div>
+          <div class="bg-gray-300 py-2 mt-2 w-[180px] animate-pulse"></div>
+          <div class="flex mt-3">
+            <div class="flex-shrink bg-gray-300 h-[20px] w-[80px] rounded-lg animate-pulse"></div>
+          </div>
+        </div>
+      {/if}
+      
+      {#if !isLoadingLotto && lottoResult != null}
         <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
           <p class="font-bold">ผลการตรวจสลากกินแบ่งรัฐบาล</p>
           <p>เลขสลาก {lottoResult.number}</p>
@@ -54,23 +93,48 @@
           <div class="flex mt-2">
             {#if lottoResult.statusType == 1}
               {#each lottoResult.status_data as status}
-                <div class="flex-shrink bg-amber-400 text-black py-1 px-2 mr-2 text-xs rounded-lg">{status.reward}</div>
+                <div class="flex-shrink bg-amber-400 text-black py-1 px-2 text-xs rounded-lg">{status.reward}</div>
               {/each}
             {:else}
-              <div class="flex-shrink bg-gray-600 text-white py-1 px-2 mr-2 text-xs rounded-lg">ไม่ถูกรางวัล</div>
+              <div class="flex-shrink bg-gray-600 text-white py-1 px-2 text-xs rounded-lg">ไม่ถูกรางวัล</div>
             {/if}
           </div>
         </div>
       {/if}
 
-      <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md">
-        อะไรไม่รู้
-      </div>
-    </div>
+      {#if isLoadingHentai && hentaiResult == null}
+        <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
+          <div class="bg-gray-300 py-2 w-[280px] animate-pulse"></div>
+          <div class="bg-gray-300 py-2 mt-2 w-[120px] animate-pulse"></div>
+          <div class="flex mt-3 mb-6">
+            <div class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"></div>
+            <div class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"></div>
+            <div class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"></div>
+          </div>
+          <div class="bg-gray-300 h-[320px] w-full rounded-md animate-pulse"></div>
+          <div class="bg-gray-300 h-[24px] w-[140px] mt-2 rounded-lg animate-pulse"></div>
+        </div>
+      {/if}
 
-
-    <div class="my-5 text-center">
-      {lottoCode}
+      {#if !isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data != null}
+        <div class="self-center bg-gray-200 w-[278px] md:w-[376px] px-4 rounded-md">
+          <div class="my-4">
+            <p class="font-bold">{hentaiResult.data.nhql.by.data.title.display}</p>
+            <p>{hentaiResult.data.nhql.by.data.info.favorite} Favorites</p>
+            <div class="flex flex-wrap mt-2">
+              {#each hentaiResult.data.nhql.by.data.metadata.tags as tags}
+                <div class="flex-shrink bg-slate-300 text-black py-1 px-2 mr-1 mb-1 text-xs rounded-lg">{tags.name}</div>
+              {/each}
+            </div>
+          </div>
+          <div class="my-4">
+            <img src={hentaiResult.data.nhql.by.data.images.cover.link} alt={hentaiResult.data.nhql.by.data.title.display} class="rounded-md" />
+          </div>
+          <div class="my-4">
+            <a class="text-blue-600" href={`https://hifumin.app/h/${hentaiResult.data.nhql.by.data.id}`} rel="noreferrer" target="_blank">Read on Hifumin</a>
+          </div>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
