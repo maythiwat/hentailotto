@@ -54,6 +54,10 @@
   let isLoadingHentai = false
 </script>
 
+<svelte:head>
+  <title>เห็นไต๋ หวย</title>
+</svelte:head>
+
 <div class="min-h-screen flex justify-center">
   <div class="w-full lg:max-w-lg">
     <div class="text-center my-12">
