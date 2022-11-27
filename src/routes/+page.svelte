@@ -86,7 +86,7 @@
     <div class="flex flex-col my-12">
       {#if isLoadingLotto && lottoResult == null}
         <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
-          <div class="bg-gray-300 py-2 w-[260px] animate-pulse"></div>
+          <div class="bg-gray-300 py-2 w-[240px] animate-pulse"></div>
           <div class="bg-gray-300 py-2 mt-2 w-[140px] animate-pulse"></div>
           <div class="bg-gray-300 py-2 mt-2 w-[180px] animate-pulse"></div>
           <div class="flex mt-3">
@@ -114,7 +114,7 @@
 
       {#if isLoadingHentai && hentaiResult == null}
         <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
-          <div class="bg-gray-300 py-2 w-[280px] animate-pulse"></div>
+          <div class="bg-gray-300 py-2 w-[240px] animate-pulse"></div>
           <div class="bg-gray-300 py-2 mt-2 w-[120px] animate-pulse"></div>
           <div class="flex mt-3 mb-6">
             <div class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"></div>
