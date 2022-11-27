@@ -3,7 +3,7 @@
   import PincodeInput from 'svelte-pincode/src/unstyled/PincodeInput.svelte'
 
   function scrollToBottom() {
-    window.scrollTo(0, document.body.scrollHeight)
+    document.querySelector('#results')?.scrollIntoView()
   }
 
   function handleClick() {
@@ -83,7 +83,7 @@
       </button>
     </div>
 
-    <div class="flex flex-col my-12">
+    <div class="flex flex-col py-6" id="results">
       {#if isLoadingLotto && lottoResult == null}
         <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
           <div class="bg-gray-300 py-2 w-[240px] animate-pulse"></div>
@@ -137,7 +137,7 @@
               {/each}
             </div>
           </div>
-          <div class="my-6">
+          <div class="my-8">
             <img
               referrerpolicy="no-referrer"
               src={hentaiResult.data.nhql.by.data.images.cover.link}
@@ -147,10 +147,22 @@
             />
           </div>
           <div class="my-4">
-            <a class="text-blue-600" href={`https://hifumin.app/h/${hentaiResult.data.nhql.by.data.id}`} rel="noreferrer" target="_blank">Read on Hifumin</a>
+            <div class="mb-2">
+              <a class="text-blue-600" href={`https://hifumin.app/h/${hentaiResult.data.nhql.by.data.id}`} rel="noreferrer" target="_blank">Read on Hifumin</a>
+            </div>
+            <div>
+              <a class="text-blue-600" href={`https://nhentai.net/g/${hentaiResult.data.nhql.by.data.id}`} rel="noreferrer" target="_blank">Read on nHentai</a>
+            </div>
           </div>
         </div>
       {/if}
+    </div>
+
+    <div class="mt-3 mb-6">
+      <a href="https://wazt.net">
+        <img alt="wazt" src="/wazt.svg" class="h-6 mx-auto mb-3">
+      </a>
+      <p class="text-center text-gray-600 text-sm">~ just another side project by wazt ~</p>
     </div>
   </div>
 </div>
