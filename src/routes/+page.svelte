@@ -23,10 +23,10 @@
 <div class="min-h-screen flex justify-center">
   <div class="w-full lg:max-w-lg">
     <div class="text-center my-12">
-      <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-purple-500 drop-shadow-sm mb-2">
+      <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-purple-500 drop-shadow-sm py-2">
         เห็นไต๋ หวย
       </h1>
-      <p class="text-medium text-gray-600">หวยแดกไม่เป็นไร มีโดจินเยียวยาใจ</p>
+      <p class="text-lg text-medium text-gray-600">หวยแดกไม่เป็นไร มีโดจินเยียวยาใจ</p>
     </div>
 
     <Pincode class="flex justify-center my-6" bind:code={lottoCode} type="numeric">
