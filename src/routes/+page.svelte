@@ -2,6 +2,10 @@
   import Pincode from 'svelte-pincode/src/unstyled/Pincode.svelte'
   import PincodeInput from 'svelte-pincode/src/unstyled/PincodeInput.svelte'
 
+  function scrollToBottom() {
+    window.scrollTo(0, document.body.scrollHeight)
+  }
+
   function handleClick() {
     let lotto = lottoCode.join('')
 
@@ -20,6 +24,7 @@
       .then(res => {
         lottoResult = res
         isLoadingLotto = false
+        scrollToBottom()
       })
     
     fetch('https://api.hifumin.app/v1/graphql', {
@@ -37,6 +42,7 @@
         if (res.data) {
           hentaiResult = res
           isLoadingHentai = false
+          scrollToBottom()
         }
       })
   }
@@ -127,8 +133,13 @@
               {/each}
             </div>
           </div>
-          <div class="my-4">
-            <img src={hentaiResult.data.nhql.by.data.images.cover.link} alt={hentaiResult.data.nhql.by.data.title.display} class="rounded-md" />
+          <div class="my-6">
+            <img
+              src={hentaiResult.data.nhql.by.data.images.cover.link}
+              alt={hentaiResult.data.nhql.by.data.title.display}
+              on:load={scrollToBottom}
+              class="rounded-md blur-sm hover:blur-none transition-all"
+            />
           </div>
           <div class="my-4">
             <a class="text-blue-600" href={`https://hifumin.app/h/${hentaiResult.data.nhql.by.data.id}`} rel="noreferrer" target="_blank">Read on Hifumin</a>
