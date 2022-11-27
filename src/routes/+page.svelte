@@ -3,10 +3,21 @@
   import PincodeInput from 'svelte-pincode/src/unstyled/PincodeInput.svelte'
 
   function handleClick() {
+    let lotto = lottoCode.join('')
+
     lottoCode = []
+    lottoResult = null
+
+    fetch('/api/check', {
+      method: 'POST',
+      body: JSON.stringify({ lotto })
+    })
+      .then(res => res.json())
+      .then(res => lottoResult = res)
   }
 
-  let lottoCode = [] as string[]
+  let lottoCode: string[] = []
+  let lottoResult: any = null
 </script>
 
 <div class="min-h-screen flex justify-center">
@@ -35,9 +46,22 @@
     </div>
 
     <div class="flex flex-col my-12">
-      <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
-        ผลการตรวจสลากกินแบ่งรัฐบาล
-      </div>
+      {#if lottoResult != null}
+        <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
+          <p class="font-bold">ผลการตรวจสลากกินแบ่งรัฐบาล</p>
+          <p>เลขสลาก {lottoResult.number}</p>
+          <p>งวดประจำวันที่ {lottoResult.date}</p>
+          <div class="flex mt-2">
+            {#if lottoResult.statusType == 1}
+              {#each lottoResult.status_data as status}
+                <div class="flex-shrink bg-amber-400 text-black py-1 px-2 mr-2 text-xs rounded-lg">{status.reward}</div>
+              {/each}
+            {:else}
+              <div class="flex-shrink bg-gray-600 text-white py-1 px-2 mr-2 text-xs rounded-lg">ไม่ถูกรางวัล</div>
+            {/if}
+          </div>
+        </div>
+      {/if}
 
       <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md">
         อะไรไม่รู้
