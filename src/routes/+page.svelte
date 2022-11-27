@@ -139,6 +139,7 @@
           </div>
           <div class="my-6">
             <img
+              referrerpolicy="no-referrer"
               src={hentaiResult.data.nhql.by.data.images.cover.link}
               alt={hentaiResult.data.nhql.by.data.title.display}
               on:load={scrollToBottom}
