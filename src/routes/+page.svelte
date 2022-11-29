@@ -1,15 +1,14 @@
 <script lang="ts">
-  import Pincode from 'svelte-pincode/src/unstyled/Pincode.svelte'
-  import PincodeInput from 'svelte-pincode/src/unstyled/PincodeInput.svelte'
-
-  function scrollToBottom() {
+  function scrollToResults() {
     document.querySelector('#results')?.scrollIntoView()
   }
 
-  function handleClick() {
-    let lotto = lottoCode.join('')
+  function handler() {
+    if (!/^\d{6}$/gm.test(lottoCode)) return
 
-    lottoCode = []
+    let lotto = lottoCode
+
+    lottoCode = ''
     lottoResult = null
     hentaiResult = null
 
@@ -24,7 +23,7 @@
       .then(res => {
         lottoResult = res
         isLoadingLotto = false
-        scrollToBottom()
+        scrollToResults()
       })
     
     fetch('https://api.hifumin.app/v1/graphql', {
@@ -42,12 +41,12 @@
         if (res.data) {
           hentaiResult = res
           isLoadingHentai = false
-          scrollToBottom()
+          scrollToResults()
         }
       })
   }
 
-  let lottoCode: string[] = []
+  let lottoCode: string = ''
   let lottoResult: any = null
   let hentaiResult: any = null
   let isLoadingLotto = false
@@ -59,7 +58,7 @@
 </svelte:head>
 
 <div class="min-h-screen flex justify-center">
-  <div class="w-full lg:max-w-lg">
+  <div class="w-full md:max-w-md">
     <div class="text-center my-12">
       <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-purple-500 drop-shadow-sm py-2">
         เห็นไต๋ หวย
@@ -67,25 +66,18 @@
       <p class="text-lg text-medium text-gray-600">หวยแดกไม่เป็นไร มีโดจินเยียวยาใจ</p>
     </div>
 
-    <Pincode class="flex justify-center my-6" bind:code={lottoCode} type="numeric">
-      {#each Array(6) as _}
-        <PincodeInput class="flex mx-1 h-10 w-10 md:h-14 md:w-14 text-lg md:text-2xl text-center align-middle border-2 border-gray-300 rounded-md" />
-      {/each}
-    </Pincode>
+    <form on:submit|preventDefault={handler} class="flex mx-4">
+      <input
+        type="text" inputmode="numeric" minlength="6" maxlength="6" pattern={'[0-9]{6}'} required
+        placeholder="เลขหวย 6 หลัก"
+        class="w-full p-2 text-2xl text-center border-2 border-gray-300 rounded-md"
+        bind:value={lottoCode}
+      />
+    </form>
 
-    <div class="flex justify-center">
-      <button
-        class="bg-gray-600 hover:bg-gray-500 disabled:bg-gray-300 text-white disabled:text-gray-600 transition-colors py-2 rounded-md w-[278px] md:w-[376px]"
-        disabled={lottoCode.join('').length != 6}
-        on:click|preventDefault={handleClick}
-      >
-        ตรวจหวย
-      </button>
-    </div>
-
-    <div class="flex flex-col py-6" id="results">
+    <div class="flex flex-col py-6 mx-4" id="results">
       {#if isLoadingLotto && lottoResult == null}
-        <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
+        <div class="self-center bg-gray-200 w-full p-4 rounded-md mb-3">
           <div class="bg-gray-300 py-2 w-[240px] animate-pulse"></div>
           <div class="bg-gray-300 py-2 mt-2 w-[140px] animate-pulse"></div>
           <div class="bg-gray-300 py-2 mt-2 w-[180px] animate-pulse"></div>
@@ -95,8 +87,8 @@
         </div>
       {/if}
       
-      {#if !isLoadingLotto && lottoResult != null}
-        <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
+      {#if !isLoadingLotto && lottoResult != null && typeof lottoResult.statusType != 'undefined'}
+        <div class="self-center bg-gray-200 w-full p-4 rounded-md mb-3">
           <p class="font-bold">ผลการตรวจสลากกินแบ่งรัฐบาล</p>
           <p>เลขสลาก {lottoResult.number}</p>
           <p>งวดประจำวันที่ {lottoResult.date}</p>
@@ -113,7 +105,7 @@
       {/if}
 
       {#if isLoadingHentai && hentaiResult == null}
-        <div class="self-center bg-gray-200 w-[278px] md:w-[376px] p-4 rounded-md mb-3">
+        <div class="self-center bg-gray-200 w-full p-4 rounded-md mb-3">
           <div class="bg-gray-300 py-2 w-[240px] animate-pulse"></div>
           <div class="bg-gray-300 py-2 mt-2 w-[120px] animate-pulse"></div>
           <div class="flex mt-3 mb-6">
@@ -127,7 +119,7 @@
       {/if}
 
       {#if !isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data != null}
-        <div class="self-center bg-gray-200 w-[278px] md:w-[376px] px-4 rounded-md">
+        <div class="self-center bg-gray-200 w-full px-4 rounded-md">
           <div class="my-4">
             <p class="font-bold">{hentaiResult.data.nhql.by.data.title.display}</p>
             <p>{hentaiResult.data.nhql.by.data.info.favorite} Favorites</p>
@@ -142,7 +134,7 @@
               referrerpolicy="no-referrer"
               src={hentaiResult.data.nhql.by.data.images.cover.link}
               alt={hentaiResult.data.nhql.by.data.title.display}
-              on:load={scrollToBottom}
+              on:load={scrollToResults}
               class="rounded-md blur-sm hover:blur-none transition-all"
             />
           </div>
