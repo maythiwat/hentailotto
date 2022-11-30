@@ -3,6 +3,22 @@
     document.querySelector('#results')?.scrollIntoView()
   }
 
+  function onInputPaste(e: ClipboardEvent) {
+    let paste = e.clipboardData?.getData('text')
+    if (!paste) return
+
+    let codeOnly = paste.replace(/[^0-9]+/g, '')
+    if (codeOnly.length == 0) return
+
+    if (lottoCode.length == 0) {
+      lottoCode = codeOnly.slice(0, 6)
+      handler()
+      return
+    }
+
+    lottoCode = lottoCode + codeOnly.slice(0, (6 - lottoCode.length))
+  }
+
   function handler() {
     if (!/^\d{6}$/gm.test(lottoCode)) return
 
@@ -67,11 +83,13 @@
     </div>
 
     <form on:submit|preventDefault={handler} class="flex mx-4">
+      <!-- svelte-ignore a11y-autofocus -->
       <input
         type="text" inputmode="numeric" minlength="6" maxlength="6" pattern={'[0-9]{6}'} required
-        placeholder="เลขหวย 6 หลัก"
+        placeholder="เลขหวย 6 หลัก" autofocus
         class="w-full p-2 text-2xl text-center border-2 border-gray-300 rounded-md"
         bind:value={lottoCode}
+        on:paste|preventDefault={onInputPaste}
       />
     </form>
 
