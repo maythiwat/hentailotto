@@ -87,7 +87,7 @@
       <p class="text-lg text-medium text-gray-600">หวยแดกไม่เป็นไร มีโดจินเยียวยาใจ</p>
     </div>
 
-    <form on:submit|preventDefault={handler} class="flex mx-4">
+    <form on:submit|preventDefault={handler} class="mx-4">
       <!-- svelte-ignore a11y-autofocus -->
       <input
         type="text" inputmode="numeric" minlength="6" maxlength="6" pattern={'[0-9]{6}'} required
@@ -96,6 +96,14 @@
         bind:value={lottoCode}
         on:paste|preventDefault={onInputPaste}
       />
+
+      <button
+        type="submit"
+        class="bg-gray-600 hover:bg-gray-500 disabled:bg-gray-300 text-white disabled:text-gray-600 transition-colors mt-3 py-2 rounded-md w-full"
+        disabled={lottoCode.length < 6}
+      >
+        ตรวจหวย
+      </button>
     </form>
 
     <div class="flex flex-col py-6 mx-4" id="results">
