@@ -72,6 +72,10 @@
 
 <svelte:head>
   <title>เห็นไต๋ หวย</title>
+  <meta name="description" content="ตรวจหวยยังไงให้แหวกกว่าใครเขา... เห็นไต๋ หวย (Hentai Lotto) จะพาคุณดำดิ่งสู่จักรวาลแห่งเลข 6 หลัก" />
+  <meta property="og:title" content="เห็นไต๋ หวย | Hentai Lotto" />
+  <meta property="og:description" content="ดำดิ่งสู่จักรวาลแห่งเลข 6 หลัก เว็บตรวจหวยที่พาคุณขึ้นสวรรค์ได้ หนึ่งในผลงานคุณภาพจาก Wazt" />
+  <meta property="og:image" content="/wazt-ogp.jpg" />
 </svelte:head>
 
 <div class="min-h-screen flex justify-center">
