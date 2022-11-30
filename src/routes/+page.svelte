@@ -5,18 +5,20 @@
 
   function onInputPaste(e: ClipboardEvent) {
     let paste = e.clipboardData?.getData('text')
-    if (!paste) return
+    if (!paste) return false
 
-    let codeOnly = paste.replace(/[^0-9]+/g, '')
-    if (codeOnly.length == 0) return
-
-    if (lottoCode.length == 0) {
-      lottoCode = codeOnly.slice(0, 6)
+    if (lottoCode.length == 0 && /^[0-9]{6}$/gm.test(paste)) {
+      lottoCode = paste
       handler()
-      return
+      return false
     }
 
+    let codeOnly = paste.replace(/[^0-9]+/g, '')
+    if (codeOnly.length == 0) return false
+
     lottoCode = lottoCode + codeOnly.slice(0, (6 - lottoCode.length))
+    window.scrollTo(0, 0)
+    return true
   }
 
   function handler() {
