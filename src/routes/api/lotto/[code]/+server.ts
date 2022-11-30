@@ -1,9 +1,8 @@
 import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 
-export const POST: RequestHandler = async ({ request }) => {
-  let { lotto } = await request.json()
-
+export const GET: RequestHandler = async ({ params }) => {
+  let lotto = params.code
   if (!lotto || lotto.length != 6) {
     throw error(400, 'lotto must be 6 digit')
   }
@@ -11,7 +10,7 @@ export const POST: RequestHandler = async ({ request }) => {
   let { date } = await fetch('https://www.glo.or.th/api/lottery/getPeriodsByYear', {
     method: 'POST',
     body: JSON.stringify({
-      year: '2022',
+      year: (new Date()).getFullYear().toString(),
       type: 'CHECKED'
     }),
     headers: {
@@ -50,7 +49,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
   return new Response(JSON.stringify(res), {
     headers: {
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      'cache-control': 's-maxage=1, stale-while-revalidate=59'
     }
   })
 }

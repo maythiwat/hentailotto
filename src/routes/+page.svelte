@@ -31,9 +31,8 @@
     isLoadingLotto = true
     isLoadingHentai = true
 
-    fetch('/api/check', {
-      method: 'POST',
-      body: JSON.stringify({ lotto })
+    fetch(`/api/lotto/${lotto}`, {
+      method: 'GET'
     })
       .then(res => res.json())
       .then(res => {
@@ -41,7 +40,7 @@
         isLoadingLotto = false
         scrollToResults()
       })
-    
+
     fetch('https://api.hifumin.app/v1/graphql', {
       method: 'POST',
       body: JSON.stringify({
