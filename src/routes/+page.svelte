@@ -148,6 +148,24 @@
           </div>
         </div>
       {/if}
+
+      {#if (!isLoadingLotto && lottoResult != null && lottoResult.statusType == 1) && (!isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data == null)}
+        <div class="self-center bg-gray-200 w-full px-4 rounded-md">
+          <div class="my-4">
+            <p class="font-bold">😜 บุญมีแต่กรรมบัง</p>
+            <p>ยินดีด้วย! คุณถูกรางวัล! แต่น่าเสียดาย... ที่นี่ไม่มีโดจินสำหรับคุณ</p>
+          </div>
+        </div>
+      {/if}
+
+      {#if (!isLoadingLotto && lottoResult != null && lottoResult.statusType == 2) && (!isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data == null)}
+        <div class="self-center bg-gray-200 w-full px-4 rounded-md">
+          <div class="my-4">
+            <p class="font-bold">😭 ช่างน่าเศร้าเสียจริงๆ</p>
+            <p>โดนหวยแดกแล้ว มิหนำซ้ำยังอดอ่านโดจินอีก กร๊ากๆๆ</p>
+          </div>
+        </div>
+      {/if}
     </div>
 
     <div class="mt-3 mb-6">
