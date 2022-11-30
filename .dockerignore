@@ -7,3 +7,4 @@ Dockerfile
 .prettier*
 node_modules
 build
+README.md
