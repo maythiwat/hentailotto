@@ -7,23 +7,19 @@ export const GET: RequestHandler = async ({ params }) => {
     throw error(400, 'lotto must be 6 digit')
   }
 
-  let { date } = await fetch('https://www.glo.or.th/api/lottery/getPeriodsByYear', {
+  let { date } = await fetch('https://www.glo.or.th/api/lottery/getLatestLottery', {
     method: 'POST',
-    body: JSON.stringify({
-      year: (new Date()).getFullYear().toString(),
-      type: 'CHECKED'
-    }),
     headers: {
       accept: 'application/json, text/plain, */*',
-      'content-type': 'application/json',
+      'content-type': 'application/x-www-form-urlencoded',
       origin: 'https://www.glo.or.th',
-      referer: 'https://www.glo.or.th/mission/reward-payment/check-reward',
+      referer: 'https://www.glo.or.th/home-page',
       'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'
     },
     redirect: 'follow'
   })
     .then(res => res.json())
-    .then(res => res.response.result[0])
+    .then(res => res.response)
 
   let res = await fetch('https://www.glo.or.th/api/checking/getcheckLotteryResult', {
     method: 'POST',
