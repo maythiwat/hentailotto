@@ -1,4 +1,10 @@
 <script lang="ts">
+  function getRandomInt(min: number, max: number) {
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
+
   function scrollToResults() {
     document.querySelector('#results')?.scrollIntoView()
   }
@@ -21,17 +27,11 @@
     return true
   }
 
-  function handler() {
-    if (!/^\d{6}$/gm.test(lottoCode)) return
-
-    let lotto = lottoCode
-
-    lottoCode = ''
+  function loadLotto(lotto: string) {
     lottoResult = null
-    hentaiResult = null
-
     isLoadingLotto = true
-    isLoadingHentai = true
+    isRandomHentai = false
+    enableRandomButton = false
 
     fetch(`/api/lotto/${lotto}`, {
       method: 'GET'
@@ -42,13 +42,18 @@
         isLoadingLotto = false
         scrollToResults()
       })
+  }
+
+  function loadHentai(id: string | number) {
+    hentaiResult = null
+    isLoadingHentai = true
 
     fetch('https://api.hifumin.app/v1/graphql', {
       method: 'POST',
       body: JSON.stringify({
         operationName: 'getHentaiById',
         variables: {
-          id: Number(lotto)
+          id: Number(id)
         },
         query: 'query getHentaiById($id:Int!){nhql{by(id:$id){data{id title{display}images{cover{link info{width height}}}info{amount favorite upload}metadata{language tags{name}artists{name count}characters{name count}parodies{name count}}}}}}'
       })
@@ -63,11 +68,31 @@
       })
   }
 
+  function randomHentai() {
+    isLoadingLotto = false
+    lottoResult = null
+    enableRandomButton = true
+    isRandomHentai = true
+    loadHentai(getRandomInt(100000, 400000))
+  }
+
+  function handler() {
+    if (!/^\d{6}$/gm.test(lottoCode)) return
+
+    let lotto = lottoCode
+    lottoCode = ''
+
+    loadLotto(lotto)
+    loadHentai(lotto)
+  }
+
   let lottoCode: string = ''
   let lottoResult: any = null
   let hentaiResult: any = null
   let isLoadingLotto = false
   let isLoadingHentai = false
+  let isRandomHentai = false
+  let enableRandomButton = false
 </script>
 
 <svelte:head>
@@ -104,6 +129,15 @@
       >
         ตรวจหวย
       </button>
+        {#if enableRandomButton}
+        <button
+          type="button"
+          class="text-white bg-gradient-to-r from-sky-400 to-purple-500 hover:drop-shadow-lg transition-all mt-3 py-2 rounded-md w-full"
+          on:click={randomHentai}
+        >
+          สุ่มโดจิน
+        </button>
+      {/if}
     </form>
 
     <div class="flex flex-col py-6 mx-4" id="results">
@@ -152,6 +186,13 @@
       {#if !isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data != null}
         <div class="self-center bg-gray-200 w-full px-4 rounded-md">
           <div class="my-4">
+            {#if isRandomHentai}
+              <div class="flex flex-wrap mb-2">
+                <div class="flex-shrink bg-gradient-to-r from-sky-400 to-purple-500 text-white py-1 px-2 text-xs rounded-lg">
+                  <span class="font-medium">Random</span> | <span class="font-medium">{hentaiResult.data.nhql.by.data.id}</span>
+                </div>
+              </div>
+            {/if}
             <p class="font-bold">{hentaiResult.data.nhql.by.data.title.display}</p>
             <p>{hentaiResult.data.nhql.by.data.info.favorite} Favorites</p>
             <div class="flex flex-wrap mt-2">
@@ -166,15 +207,30 @@
               src={hentaiResult.data.nhql.by.data.images.cover.link}
               alt={hentaiResult.data.nhql.by.data.title.display}
               on:load={scrollToResults}
-              class="rounded-md blur-sm hover:blur-none transition-all"
+              class="w-full rounded-md blur-sm hover:blur-none transition-all"
             />
           </div>
           <div class="my-4">
+            <div class="mb-2 text-gray-900 text-center">
+              อยากอ่านที่เว็บไหน?
+            </div>
             <div class="mb-2">
-              <a class="text-blue-600" href={`https://hifumin.app/h/${hentaiResult.data.nhql.by.data.id}`} rel="noreferrer" target="_blank">Read on Hifumin</a>
+              <a
+               class="flex justify-center bg-gradient-to-r from-sky-600 to-gray-400 hover:drop-shadow-lg transition-all text-white rounded-md py-2"
+               href={`https://hifumin.app/h/${hentaiResult.data.nhql.by.data.id}`}
+               rel="noreferrer" target="_blank"
+              >
+                <span class="font-semibold">Hifumin</span>
+              </a>
             </div>
             <div>
-              <a class="text-blue-600" href={`https://nhentai.net/g/${hentaiResult.data.nhql.by.data.id}`} rel="noreferrer" target="_blank">Read on nHentai</a>
+              <a
+                class="flex justify-center bg-gray-900 hover:drop-shadow-lg transition-all text-white rounded-md py-2"
+                href={`https://nhentai.net/g/${hentaiResult.data.nhql.by.data.id}`}
+                rel="noreferrer" target="_blank"
+              >
+                <span class="font-semibold"><span class="text-red-500">n</span>hentai</span>
+              </a>
             </div>
           </div>
         </div>
@@ -185,6 +241,12 @@
           <div class="my-4">
             <p class="font-bold">😜 บุญมีแต่กรรมบัง</p>
             <p>ยินดีด้วย! คุณถูกรางวัล! แต่น่าเสียดาย... ที่นี่ไม่มีโดจินสำหรับคุณ</p>
+            <button
+              class="text-white bg-gradient-to-r from-sky-400 to-purple-500 hover:drop-shadow-lg transition-all mt-3 py-2 rounded-md w-full"
+              on:click={randomHentai}
+            >
+              สุ่มโดจิน แก้เซ็งไปพลางๆ ?
+            </button>
           </div>
         </div>
       {/if}
@@ -193,7 +255,13 @@
         <div class="self-center bg-gray-200 w-full px-4 rounded-md">
           <div class="my-4">
             <p class="font-bold">😭 ช่างน่าเศร้าเสียจริงๆ</p>
-            <p>โดนหวยแดกแล้ว มิหนำซ้ำยังอดอ่านโดจินอีก กร๊ากๆๆ</p>
+            <p>โดนหวยแดกแล้ว มิหนำซ้ำยังไม่มีโดให้อ่านอีก กร๊ากๆๆ</p>
+            <button
+              class="text-white bg-gradient-to-r from-sky-400 to-purple-500 hover:drop-shadow-lg transition-all mt-3 py-2 rounded-md w-full"
+              on:click={randomHentai}
+            >
+              สุ่มโดจิน แก้เซ็งไปพลางๆ ?
+            </button>
           </div>
         </div>
       {/if}
