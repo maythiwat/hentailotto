@@ -22,7 +22,7 @@
     let codeOnly = paste.replace(/[^0-9]+/g, '')
     if (codeOnly.length == 0) return false
 
-    lottoCode = lottoCode + codeOnly.slice(0, (6 - lottoCode.length))
+    lottoCode = lottoCode + codeOnly.slice(0, 6 - lottoCode.length)
     window.scrollTo(0, 0)
     return true
   }
@@ -36,8 +36,8 @@
     fetch(`/api/lotto/${lotto}`, {
       method: 'GET'
     })
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         lottoResult = res
         isLoadingLotto = false
         scrollToResults()
@@ -55,11 +55,12 @@
         variables: {
           id: Number(id)
         },
-        query: 'query getHentaiById($id:Int!){nhql{by(id:$id){data{id title{display}images{cover{link info{width height}}}info{amount favorite upload}metadata{language tags{name}artists{name count}characters{name count}parodies{name count}}}}}}'
+        query:
+          'query getHentaiById($id:Int!){nhql{by(id:$id){data{id title{display}images{cover{link info{width height}}}info{amount favorite upload}metadata{language tags{name}artists{name count}characters{name count}parodies{name count}}}}}}'
       })
     })
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         if (res.data) {
           hentaiResult = res
           isLoadingHentai = false
@@ -97,16 +98,24 @@
 
 <svelte:head>
   <title>เห็นไต๋ หวย</title>
-  <meta name="description" content="ตรวจหวยยังไงให้แหวกกว่าใครเขา... เห็นไต๋ หวย (Hentai Lotto) จะพาคุณดำดิ่งสู่จักรวาลแห่งเลข 6 หลัก" />
+  <meta
+    name="description"
+    content="ตรวจหวยยังไงให้แหวกกว่าใครเขา... เห็นไต๋ หวย (Hentai Lotto) จะพาคุณดำดิ่งสู่จักรวาลแห่งเลข 6 หลัก"
+  />
   <meta property="og:title" content="เห็นไต๋ หวย | Hentai Lotto" />
-  <meta property="og:description" content="ดำดิ่งสู่จักรวาลแห่งเลข 6 หลัก เว็บตรวจหวยที่พาคุณขึ้นสวรรค์ได้ หนึ่งในผลงานคุณภาพจาก Wazt" />
+  <meta
+    property="og:description"
+    content="ดำดิ่งสู่จักรวาลแห่งเลข 6 หลัก เว็บตรวจหวยที่พาคุณขึ้นสวรรค์ได้ หนึ่งในผลงานคุณภาพจาก Wazt"
+  />
   <meta property="og:image" content="/wazt-ogp.jpg" />
 </svelte:head>
 
 <div class="min-h-screen flex justify-center">
   <div class="w-full md:max-w-md">
     <div class="text-center my-12">
-      <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-purple-500 drop-shadow-sm py-2">
+      <h1
+        class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-purple-500 drop-shadow-sm py-2"
+      >
         เห็นไต๋ หวย
       </h1>
       <p class="text-lg text-medium text-gray-600">หวยแดกไม่เป็นไร มีโดจินเยียวยาใจ</p>
@@ -115,8 +124,14 @@
     <form on:submit|preventDefault={handler} class="mx-4">
       <!-- svelte-ignore a11y-autofocus -->
       <input
-        type="text" inputmode="numeric" minlength="6" maxlength="6" pattern={'[0-9]{6}'} required
-        placeholder="เลขหวย 6 หลัก" autofocus
+        type="text"
+        inputmode="numeric"
+        minlength="6"
+        maxlength="6"
+        pattern={'[0-9]{6}'}
+        required
+        placeholder="เลขหวย 6 หลัก"
+        autofocus
         class="w-full p-2 text-2xl text-center border-2 border-gray-300 rounded-md"
         bind:value={lottoCode}
         on:paste|preventDefault={onInputPaste}
@@ -129,7 +144,7 @@
       >
         ตรวจหวย
       </button>
-        {#if enableRandomButton}
+      {#if enableRandomButton}
         <button
           type="button"
           class="text-white bg-gradient-to-r from-sky-400 to-purple-500 hover:drop-shadow-lg transition-all mt-3 py-2 rounded-md w-full"
@@ -151,7 +166,7 @@
           </div>
         </div>
       {/if}
-      
+
       {#if !isLoadingLotto && lottoResult != null && typeof lottoResult.statusType != 'undefined'}
         <div class="self-center bg-gray-200 w-full p-4 rounded-md mb-3">
           <p class="font-bold">ผลการตรวจสลากกินแบ่งรัฐบาล</p>
@@ -160,10 +175,14 @@
           <div class="flex mt-2">
             {#if lottoResult.statusType == 1}
               {#each lottoResult.status_data as status}
-                <div class="flex-shrink bg-amber-400 text-black py-1 px-2 text-xs rounded-lg">{status.reward}</div>
+                <div class="flex-shrink bg-amber-400 text-black py-1 px-2 text-xs rounded-lg">
+                  {status.reward}
+                </div>
               {/each}
             {:else}
-              <div class="flex-shrink bg-gray-600 text-white py-1 px-2 text-xs rounded-lg">ไม่ถูกรางวัล</div>
+              <div class="flex-shrink bg-gray-600 text-white py-1 px-2 text-xs rounded-lg">
+                ไม่ถูกรางวัล
+              </div>
             {/if}
           </div>
         </div>
@@ -174,9 +193,15 @@
           <div class="bg-gray-300 py-2 w-[240px] animate-pulse"></div>
           <div class="bg-gray-300 py-2 mt-2 w-[120px] animate-pulse"></div>
           <div class="flex mt-3 mb-6">
-            <div class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"></div>
-            <div class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"></div>
-            <div class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"></div>
+            <div
+              class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"
+            ></div>
+            <div
+              class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"
+            ></div>
+            <div
+              class="flex-shrink bg-gray-300 h-[20px] w-[80px] mr-1 rounded-lg animate-pulse"
+            ></div>
           </div>
           <div class="bg-gray-300 h-[320px] w-full rounded-md animate-pulse"></div>
           <div class="bg-gray-300 h-[24px] w-[140px] mt-2 rounded-lg animate-pulse"></div>
@@ -188,8 +213,11 @@
           <div class="my-4">
             {#if isRandomHentai}
               <div class="flex flex-wrap mb-2">
-                <div class="flex-shrink bg-gradient-to-r from-sky-400 to-purple-500 text-white py-1 px-2 text-xs rounded-lg">
-                  <span class="font-medium">Random</span> | <span class="font-medium">{hentaiResult.data.nhql.by.data.id}</span>
+                <div
+                  class="flex-shrink bg-gradient-to-r from-sky-400 to-purple-500 text-white py-1 px-2 text-xs rounded-lg"
+                >
+                  <span class="font-medium">Random</span> |
+                  <span class="font-medium">{hentaiResult.data.nhql.by.data.id}</span>
                 </div>
               </div>
             {/if}
@@ -197,7 +225,11 @@
             <p>{hentaiResult.data.nhql.by.data.info.favorite} Favorites</p>
             <div class="flex flex-wrap mt-2">
               {#each hentaiResult.data.nhql.by.data.metadata.tags as tags}
-                <div class="flex-shrink bg-slate-300 text-black py-1 px-2 mr-1 mb-1 text-xs rounded-lg">{tags.name}</div>
+                <div
+                  class="flex-shrink bg-slate-300 text-black py-1 px-2 mr-1 mb-1 text-xs rounded-lg"
+                >
+                  {tags.name}
+                </div>
               {/each}
             </div>
           </div>
@@ -211,14 +243,13 @@
             />
           </div>
           <div class="my-4">
-            <div class="mb-2 text-gray-900 text-center">
-              อยากอ่านที่เว็บไหน?
-            </div>
+            <div class="mb-2 text-gray-900 text-center">อยากอ่านที่เว็บไหน?</div>
             <div class="mb-2">
               <a
-               class="flex justify-center bg-gradient-to-r from-sky-600 to-gray-400 hover:drop-shadow-lg transition-all text-white rounded-md py-2"
-               href={`https://hifumin.app/h/${hentaiResult.data.nhql.by.data.id}`}
-               rel="noreferrer" target="_blank"
+                class="flex justify-center bg-gradient-to-r from-sky-600 to-gray-400 hover:drop-shadow-lg transition-all text-white rounded-md py-2"
+                href={`https://hifumin.app/h/${hentaiResult.data.nhql.by.data.id}`}
+                rel="noreferrer"
+                target="_blank"
               >
                 <span class="font-semibold">Hifumin</span>
               </a>
@@ -227,7 +258,8 @@
               <a
                 class="flex justify-center bg-gray-900 hover:drop-shadow-lg transition-all text-white rounded-md py-2"
                 href={`https://nhentai.net/g/${hentaiResult.data.nhql.by.data.id}`}
-                rel="noreferrer" target="_blank"
+                rel="noreferrer"
+                target="_blank"
               >
                 <span class="font-semibold"><span class="text-red-500">n</span>hentai</span>
               </a>
@@ -236,7 +268,7 @@
         </div>
       {/if}
 
-      {#if (!isLoadingLotto && lottoResult != null && lottoResult.statusType == 1) && (!isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data == null)}
+      {#if !isLoadingLotto && lottoResult != null && lottoResult.statusType == 1 && !isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data == null}
         <div class="self-center bg-gray-200 w-full px-4 rounded-md">
           <div class="my-4">
             <p class="font-bold">😜 บุญมีแต่กรรมบัง</p>
@@ -251,7 +283,7 @@
         </div>
       {/if}
 
-      {#if (!isLoadingLotto && lottoResult != null && lottoResult.statusType == 2) && (!isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data == null)}
+      {#if !isLoadingLotto && lottoResult != null && lottoResult.statusType == 2 && !isLoadingHentai && hentaiResult != null && hentaiResult.data.nhql.by.data == null}
         <div class="self-center bg-gray-200 w-full px-4 rounded-md">
           <div class="my-4">
             <p class="font-bold">😭 ช่างน่าเศร้าเสียจริงๆ</p>
@@ -269,7 +301,7 @@
 
     <div class="mt-3 mb-6">
       <a href="https://wazt.net">
-        <img alt="wazt" src="/wazt.svg" class="h-6 mx-auto mb-3">
+        <img alt="wazt" src="/wazt.svg" class="h-6 mx-auto mb-3" />
       </a>
       <p class="text-center text-gray-600 text-sm">~ just another side project by wazt ~</p>
     </div>
