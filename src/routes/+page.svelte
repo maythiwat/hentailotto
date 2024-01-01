@@ -325,11 +325,20 @@
       {/if}
     </div>
 
-    <div class="mt-3 mb-6">
+    <div class="text-center text-sm mt-3 mb-6">
       <a href="https://wazt.net">
         <img alt="wazt" src="/wazt.svg" class="h-6 mx-auto mb-3" />
       </a>
-      <p class="text-center text-gray-600 text-sm">~ just another side project by wazt ~</p>
+
+      <p class="text-gray-600">~ just another side project by wazt ~</p>
+
+      <a
+        href="https://github.com/maythiwat/hentailotto"
+        target="_blank"
+        class="text-purple-500 underline"
+      >
+        Open Source on GitHub!
+      </a>
     </div>
   </div>
 </div>
