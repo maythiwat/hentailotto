@@ -64,6 +64,19 @@
         if (res.data) {
           hentaiResult = res
           isLoadingHentai = false
+
+          if (!res.data.nhql.by.data && isRandomHentai && !isFulfilled) {
+            if (attempt >= 10) {
+              loadHentai(177013)
+            }else{
+              randomHentai()
+              attempt++
+            }
+            return
+          }
+
+          isFulfilled = true
+          attempt = 0
           scrollToResults()
         }
       })
@@ -74,7 +87,8 @@
     lottoResult = null
     enableRandomButton = true
     isRandomHentai = true
-    loadHentai(getRandomInt(100000, 400000))
+    isFulfilled = false
+    loadHentai(getRandomInt(100000, 500000))
   }
 
   function handler() {
@@ -93,6 +107,8 @@
   let isLoadingLotto = false
   let isLoadingHentai = false
   let isRandomHentai = false
+  let isFulfilled = true
+  let attempt = 0
   let enableRandomButton = false
 </script>
 
