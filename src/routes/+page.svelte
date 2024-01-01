@@ -270,9 +270,19 @@
                 <span class="font-semibold">Hifumin</span>
               </a>
             </div>
+            <div class="mb-2">
+              <a
+                class="flex justify-center bg-white hover:drop-shadow-lg transition-all text-blue-600 rounded-md py-2"
+                href={`https://h.rayriffy.com/g/${hentaiResult.data.nhql.by.data.id}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                <span class="font-semibold">Riffy H</span>
+              </a>
+            </div>
             <div>
               <a
-                class="flex justify-center bg-gray-900 hover:drop-shadow-lg transition-all text-white rounded-md py-2"
+                class="flex justify-center bg-gray-800 hover:drop-shadow-lg transition-all text-white rounded-md py-2"
                 href={`https://nhentai.net/g/${hentaiResult.data.nhql.by.data.id}`}
                 rel="noreferrer"
                 target="_blank"
